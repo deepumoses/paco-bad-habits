@@ -1,13 +1,15 @@
 'use client';
 
-import { useHabitsStore } from '../store/habits-store';
+import { useHabitsQuery } from '../api/use-habits';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Flame, AlertTriangle } from 'lucide-react';
 import { format, subDays, isSameDay, parseISO } from 'date-fns';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export function NeverMissTwice() {
-  const { habits, logs } = useHabitsStore();
+  const { data } = useHabitsQuery();
+  const habits = data?.habits || [];
+  const logs = data?.logs || [];
 
   const today = new Date();
   const yesterday = subDays(today, 1);

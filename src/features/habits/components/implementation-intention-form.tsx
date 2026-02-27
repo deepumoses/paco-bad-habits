@@ -1,6 +1,6 @@
 'use client';
 
-import { useHabitsStore } from '../store/habits-store';
+import { useHabitsQuery, useAddIntentionMutation, useRemoveIntentionMutation } from '../api/use-habits';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -18,7 +18,11 @@ const intentionSchema = z.object({
 type IntentionFormValues = z.infer<typeof intentionSchema>;
 
 export function ImplementationIntentionForm() {
-  const { intentions, addIntention, removeIntention } = useHabitsStore();
+  const { data } = useHabitsQuery();
+  const { mutate: addIntention } = useAddIntentionMutation();
+  const { mutate: removeIntention } = useRemoveIntentionMutation();
+
+  const intentions = data?.intentions || [];
 
   const form = useForm<IntentionFormValues>({
     resolver: zodResolver(intentionSchema),
@@ -29,7 +33,7 @@ export function ImplementationIntentionForm() {
   });
 
   const onSubmit = (data: IntentionFormValues) => {
-    addIntention(data.situation, data.action);
+    addIntention({ situation: data.situation, action: data.action });
     form.reset();
   };
 

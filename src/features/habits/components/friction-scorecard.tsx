@@ -1,6 +1,6 @@
 'use client';
 
-import { useHabitsStore } from '../store/habits-store';
+import { useHabitsQuery, useAddFrictionStepMutation, useRemoveFrictionStepMutation } from '../api/use-habits';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -9,7 +9,13 @@ import { useState } from 'react';
 import { Trash2, ShieldAlert } from 'lucide-react';
 
 export function FrictionScorecard() {
-  const { frictionSteps, addFrictionStep, removeFrictionStep, habits } = useHabitsStore();
+  const { data } = useHabitsQuery();
+  const { mutate: addFrictionStep } = useAddFrictionStepMutation();
+  const { mutate: removeFrictionStep } = useRemoveFrictionStepMutation();
+
+  const frictionSteps = data?.frictionSteps || [];
+  const habits = data?.habits || [];
+
   const [selectedHabitId, setSelectedHabitId] = useState<string>('');
   const [step, setStep] = useState('');
 
@@ -17,7 +23,7 @@ export function FrictionScorecard() {
 
   const handleAddStep = () => {
     if (selectedHabitId && step.trim()) {
-      addFrictionStep(selectedHabitId, step);
+      addFrictionStep({ habitId: selectedHabitId, step });
       setStep('');
     }
   };
