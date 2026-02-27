@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Habit {
+  id          String    @id @default(uuid())
+  userId      String
+  name        String
+  type        String // 'positive', 'negative', 'neutral'
+  description String?
+  createdAt   DateTime  @default(now())
+  logs        HabitLog[]
+  frictionSteps FrictionStep[]
+
+  @@index([userId])
+}
+
+model HabitLog {
+  id        String   @id @default(uuid())
+  habitId   String
+  habit     Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  date      String // YYYY-MM-DD
+  status    String // 'completed', 'missed', 'skipped'
+  trigger   String?
+  timestamp DateTime @default(now())
+
+  @@index([habitId])
+}
+
+model ImplementationIntention {
+  id        String   @id @default(uuid())
+  userId    String
+  situation String
+  action    String
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model FrictionStep {
+  id        String   @id @default(uuid())
+  habitId   String
+  habit     Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  step      String
+  createdAt DateTime @default(now())
+
+  @@index([habitId])
+}
+
+model AccountabilityContract {
+  id          String   @id @default(uuid())
+  userId      String
+  partnerName String
+  partnerEmail String?
+  penalty     String
+  signedAt    DateTime @default(now())
+
+  @@index([userId])
+}
+
+model HabitStack {
+  id        String   @id @default(uuid())
+  userId    String
+  oldHabit  String
+  newHabit  String
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model TemptationBundle {
+  id          String   @id @default(uuid())
+  userId      String
+  requirement String
+  reward      String
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+}
+
+model Identity {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  title       String
+  description String?
+  updatedAt   DateTime @updatedAt
+}

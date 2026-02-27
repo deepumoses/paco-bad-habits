@@ -1,19 +1,30 @@
 'use client';
 
-import { useState } from 'react';
-import { useHabitsStore } from '../store/habits-store';
+import { useState, useEffect } from 'react';
+import { useHabitsQuery, useUpdateIdentityMutation } from '../api/use-habits';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Pencil, Check, X } from 'lucide-react';
 
 export function IdentityHeader() {
-  const { identity, setIdentity } = useHabitsStore();
+  const { data } = useHabitsQuery();
+  const { mutate: setIdentity } = useUpdateIdentityMutation();
+
+  const identity = data?.identity || { title: 'I am someone who...', description: '' };
+
   const [isEditing, setIsEditing] = useState(false);
-  const [tempTitle, setTempTitle] = useState(identity.title);
+  const [tempTitle, setTempTitle] = useState('');
+
+  // Sync tempTitle with fetched identity
+  useEffect(() => {
+    if (identity.title) {
+        setTempTitle(identity.title);
+    }
+  }, [identity.title]);
 
   const handleSave = () => {
-    setIdentity(tempTitle, identity.description);
+    setIdentity({ title: tempTitle, description: identity.description || '' });
     setIsEditing(false);
   };
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useHabitsStore } from '../store/habits-store';
+import { useHabitsQuery, useAddStackMutation, useRemoveStackMutation } from '../api/use-habits';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -9,13 +9,18 @@ import { useState } from 'react';
 import { ArrowRight, Layers, Trash2 } from 'lucide-react';
 
 export function HabitStacking() {
-  const { stacks, addStack, removeStack } = useHabitsStore();
+  const { data } = useHabitsQuery();
+  const { mutate: addStack } = useAddStackMutation();
+  const { mutate: removeStack } = useRemoveStackMutation();
+
+  const stacks = data?.stacks || [];
+
   const [oldHabit, setOldHabit] = useState('');
   const [newHabit, setNewHabit] = useState('');
 
   const handleAdd = () => {
     if (oldHabit.trim() && newHabit.trim()) {
-      addStack(oldHabit, newHabit);
+      addStack({ oldHabit, newHabit });
       setOldHabit('');
       setNewHabit('');
     }

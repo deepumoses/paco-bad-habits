@@ -2,7 +2,7 @@
 
 'use client';
 
-import { useHabitsStore } from '../store/habits-store';
+import { useHabitsQuery, useSetContractMutation } from '../api/use-habits';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -13,20 +13,21 @@ import { Scroll, Handshake } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 
 export function AccountabilityContract() {
-  const { contracts, setContract } = useHabitsStore();
+  const { data } = useHabitsQuery();
+  const { mutate: setContract } = useSetContractMutation();
+
+  const contracts = data?.contracts || [];
+  const activeContract = contracts[0]; // Assuming single active contract for now
+
   const [partnerName, setPartnerName] = useState('');
   const [penalty, setPenalty] = useState('');
   const [isOpen, setIsOpen] = useState(false);
 
-  const activeContract = contracts[0]; // Assuming single active contract for now
-
   const handleSign = () => {
     if (partnerName && penalty) {
       setContract({
-        id: crypto.randomUUID(),
         partnerName,
         penalty,
-        signedAt: Date.now()
       });
       setIsOpen(false);
     }

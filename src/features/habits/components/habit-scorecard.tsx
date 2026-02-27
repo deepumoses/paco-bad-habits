@@ -1,6 +1,6 @@
 'use client';
 
-import { useHabitsStore } from '../store/habits-store';
+import { useHabitsQuery, useAddHabitMutation, useRemoveHabitMutation, useLogHabitMutation } from '../api/use-habits';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -11,10 +11,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Plus, Minus, Equal, Trash2, Calendar, MapPin, Smile, AlertCircle } from 'lucide-react';
+import { Plus, Minus, Equal, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { HabitType } from '../types';
@@ -23,7 +23,14 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Label } from '@/components/ui/label';
 
 export function HabitScorecard() {
-  const { habits, addHabit, removeHabit, logHabit, logs } = useHabitsStore();
+  const { data } = useHabitsQuery();
+  const { mutate: addHabit } = useAddHabitMutation();
+  const { mutate: removeHabit } = useRemoveHabitMutation();
+  const { mutate: logHabit } = useLogHabitMutation();
+
+  const habits = data?.habits || [];
+  const logs = data?.logs || [];
+
   const [isAdding, setIsAdding] = useState(false);
   const [newHabitName, setNewHabitName] = useState('');
   const [newHabitType, setNewHabitType] = useState<HabitType>('neutral');
@@ -32,7 +39,7 @@ export function HabitScorecard() {
 
   const handleAddHabit = () => {
     if (newHabitName.trim()) {
-      addHabit(newHabitName, newHabitType);
+      addHabit({ name: newHabitName, type: newHabitType });
       setNewHabitName('');
       setNewHabitType('neutral');
       setIsAdding(false);
@@ -40,7 +47,7 @@ export function HabitScorecard() {
   };
 
   const handleLogHabit = (habitId: string, status: 'completed' | 'missed' | 'skipped', trigger?: string) => {
-    logHabit(habitId, today, status, trigger);
+    logHabit({ habitId, date: today, status, trigger });
     if (status === 'completed') {
       confetti({
         particleCount: 100,

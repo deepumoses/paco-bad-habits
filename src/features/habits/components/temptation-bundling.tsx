@@ -1,6 +1,6 @@
 'use client';
 
-import { useHabitsStore } from '../store/habits-store';
+import { useHabitsQuery, useAddBundleMutation, useRemoveBundleMutation } from '../api/use-habits';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -8,13 +8,18 @@ import { useState } from 'react';
 import { Gift, Trash2, Lock } from 'lucide-react';
 
 export function TemptationBundling() {
-  const { bundles, addBundle, removeBundle } = useHabitsStore();
+  const { data } = useHabitsQuery();
+  const { mutate: addBundle } = useAddBundleMutation();
+  const { mutate: removeBundle } = useRemoveBundleMutation();
+
+  const bundles = data?.bundles || [];
+
   const [requirement, setRequirement] = useState('');
   const [reward, setReward] = useState('');
 
   const handleAdd = () => {
     if (requirement.trim() && reward.trim()) {
-      addBundle(requirement, reward);
+      addBundle({ requirement, reward });
       setRequirement('');
       setReward('');
     }
