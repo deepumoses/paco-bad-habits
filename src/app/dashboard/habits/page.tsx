@@ -11,6 +11,7 @@ import { CostCalculator } from '@/features/habits/components/cost-calculator';
 import { AccountabilityContract } from '@/features/habits/components/accountability-contract';
 import { TemptationBundling } from '@/features/habits/components/temptation-bundling';
 import { NeverMissTwice } from '@/features/habits/components/never-miss-twice';
+import { SelfReflection } from '@/features/habits/components/self-reflection';
 
 export default function HabitsPage() {
   return (
@@ -28,11 +29,15 @@ export default function HabitsPage() {
           <IdentityHeader />
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
+            {/* Left Column */}
             <div className="col-span-4 space-y-6">
               <HabitScorecard />
               <ImplementationIntentionForm />
               <HabitStacking />
+              <SelfReflection />
             </div>
+
+            {/* Right Column */}
             <div className="col-span-3 space-y-6">
               <NeverMissTwice />
               <FrictionScorecard />

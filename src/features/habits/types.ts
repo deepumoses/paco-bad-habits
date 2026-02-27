@@ -56,6 +56,15 @@ export interface Identity {
   description?: string;
 }
 
+export interface SelfReflection {
+  id: string;
+  date: string; // YYYY-MM-DD
+  content: string;
+  sentiment: 'positive' | 'negative' | 'neutral';
+  timestamp: number;
+}
+
+
 // Store Interface
 export interface HabitsState {
   habits: Habit[];
@@ -66,6 +75,7 @@ export interface HabitsState {
   stacks: HabitStack[];
   bundles: TemptationBundle[];
   identity: Identity;
+  reflections: SelfReflection[];
 
   // Actions
   addHabit: (name: string, type: HabitType, description?: string) => void;
@@ -81,4 +91,6 @@ export interface HabitsState {
   addBundle: (requirement: string, reward: string) => void;
   removeBundle: (id: string) => void;
   setIdentity: (title: string, description?: string) => void;
+  addReflection: (content: string, sentiment: 'positive' | 'negative' | 'neutral', date: string) => void;
+  removeReflection: (id: string) => void;
 }

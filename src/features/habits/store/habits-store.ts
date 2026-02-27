@@ -18,6 +18,7 @@ export const useHabitsStore = create<HabitsState>()(
       stacks: [],
       bundles: [],
       identity: { title: 'I am someone who...', description: '' },
+      reflections: [],
 
       addHabit: (name, type, description) => set((state) => ({
         habits: [...state.habits, { id: uuidv4(), name, type, description, createdAt: Date.now() }]
@@ -77,6 +78,20 @@ export const useHabitsStore = create<HabitsState>()(
 
       setIdentity: (title, description) => set(() => ({
         identity: { title, description }
+      })),
+
+      addReflection: (content, sentiment, date) => set((state) => ({
+        reflections: [
+          // Filter out existing reflection for the same date if needed (one per day), or allow multiple
+          // Let's allow multiple for now, or replace if date matches exactly?
+          // Requirements say "input via text for the current day". Let's just append.
+          { id: uuidv4(), content, sentiment, date, timestamp: Date.now() },
+          ...state.reflections
+        ]
+      })),
+
+      removeReflection: (id) => set((state) => ({
+        reflections: state.reflections.filter((r) => r.id !== id)
       })),
     }),
     {
