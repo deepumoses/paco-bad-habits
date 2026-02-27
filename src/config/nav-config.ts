@@ -49,6 +49,13 @@ export const navItems: NavItem[] = [
     items: []
   },
   {
+    title: 'Habits',
+    url: '/dashboard/habits',
+    icon: 'atom',
+    isActive: false,
+    items: []
+  },
+  {
     title: 'Teams',
     url: '/dashboard/workspaces/team',
     icon: 'teams',
